@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Sign Up</title>
+<title>Login Signup Switch</title>
 
 <style>
 *{
@@ -14,86 +14,77 @@
 
 body{
     height:100vh;
-    background: radial-gradient(circle at top, #0f2027, #203a43, #2c5364);
+    background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
     display:flex;
     justify-content:center;
     align-items:center;
-    overflow:hidden;
 }
 
-/* animated background circles */
-.circle{
-    position:absolute;
-    border-radius:50%;
-    filter: blur(40px);
-    animation: float 6s infinite ease-in-out;
-}
-
-.circle.one{
-    width:200px;
-    height:200px;
-    background:#00eaff;
-    top:10%;
-    left:15%;
-}
-
-.circle.two{
-    width:250px;
-    height:250px;
-    background:#ff00ff;
-    bottom:15%;
-    right:10%;
-    animation-delay:2s;
-}
-
-@keyframes float{
-    0%,100%{transform:translateY(0);}
-    50%{transform:translateY(-40px);}
-}
-
-/* signup box */
-.signup-box{
-    width:420px;
-    padding:40px;
+.container{
+    width:800px;
+    height:450px;
     background:rgba(255,255,255,0.1);
-    border-radius:16px;
     backdrop-filter: blur(15px);
-    box-shadow: 0 0 25px rgba(0,255,255,0.6);
-    animation: glow 2s infinite alternate;
-    z-index:10;
+    border-radius:20px;
+    box-shadow:0 0 30px rgba(0,255,255,0.6);
+    overflow:hidden;
+    position:relative;
 }
 
-@keyframes glow{
-    from{box-shadow:0 0 15px #00eaff;}
-    to{box-shadow:0 0 35px #00eaff;}
-}
-
-.signup-box h2{
-    text-align:center;
+/* form box */
+.form-box{
+    position:absolute;
+    width:50%;
+    height:100%;
+    padding:40px;
+    transition:0.6s ease-in-out;
     color:white;
-    margin-bottom:25px;
 }
 
-.input-box{
-    margin-bottom:15px;
+.login{
+    left:0;
 }
 
-.input-box input{
+.signup{
+    left:50%;
+    opacity:0;
+    pointer-events:none;
+}
+
+/* active animation */
+.container.active .login{
+    left:-50%;
+    opacity:0;
+}
+
+.container.active .signup{
+    left:0;
+    opacity:1;
+    pointer-events:auto;
+}
+
+/* input */
+.form-box h2{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.form-box input{
     width:100%;
     padding:12px;
+    margin-bottom:15px;
     border:none;
     outline:none;
     border-radius:8px;
     background:rgba(255,255,255,0.2);
     color:white;
-    font-size:14px;
 }
 
-.input-box input::placeholder{
+.form-box input::placeholder{
     color:#ddd;
 }
 
-.signup-btn{
+.btn{
     width:100%;
     padding:12px;
     border:none;
@@ -102,58 +93,93 @@ body{
     color:white;
     font-size:16px;
     cursor:pointer;
-    margin-top:10px;
 }
 
-.signup-btn:hover{
-    opacity:0.9;
+/* overlay */
+.overlay{
+    position:absolute;
+    width:50%;
+    height:100%;
+    right:0;
+    background: linear-gradient(135deg,#00c6ff,#0072ff);
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    transition:0.6s ease-in-out;
 }
 
-.login-link{
-    text-align:center;
+.container.active .overlay{
+    right:50%;
+}
+
+.overlay h2{
+    margin-bottom:10px;
+}
+
+.overlay button{
     margin-top:15px;
-    color:#fff;
-    font-size:14px;
-}
-
-.login-link a{
-    color:#00eaff;
-    text-decoration:none;
+    padding:10px 30px;
+    background:transparent;
+    border:2px solid white;
+    color:white;
+    border-radius:20px;
+    cursor:pointer;
 }
 </style>
 </head>
 
 <body>
 
-<div class="circle one"></div>
-<div class="circle two"></div>
+<div class="container" id="container">
 
-<div class="signup-box">
-    <h2>Create Account</h2>
-
-    <div class="input-box">
-        <input type="text" placeholder="Full Name">
-    </div>
-
-    <div class="input-box">
-        <input type="email" placeholder="Email">
-    </div>
-
-    <div class="input-box">
+    <!-- LOGIN -->
+    <div class="form-box login">
+        <h2>Login</h2>
+        <input type="text" placeholder="Username">
         <input type="password" placeholder="Password">
+        <button class="btn">Login</button>
     </div>
 
-    <div class="input-box">
-        <input type="password" placeholder="Confirm Password">
+    <!-- SIGNUP -->
+    <div class="form-box signup">
+        <h2>Sign Up</h2>
+        <input type="text" placeholder="Full Name">
+        <input type="email" placeholder="Email">
+        <input type="password" placeholder="Password">
+        <button class="btn">Sign Up</button>
     </div>
 
-    <button class="signup-btn">Sign Up</button>
-
-    <div class="login-link">
-        Already have an account?
-        <a href="#">Login</a>
+    <!-- OVERLAY -->
+    <div class="overlay">
+        <h2 id="overlayText">New Here?</h2>
+        <p id="overlayPara">Create your account</p>
+        <button id="switchBtn">Sign Up</button>
     </div>
+
 </div>
+
+<script>
+const container = document.getElementById("container");
+const btn = document.getElementById("switchBtn");
+const text = document.getElementById("overlayText");
+const para = document.getElementById("overlayPara");
+
+btn.onclick = () => {
+    container.classList.toggle("active");
+
+    if(container.classList.contains("active")){
+        btn.innerText = "Login";
+        text.innerText = "Welcome Back!";
+        para.innerText = "Login to your account";
+    } else {
+        btn.innerText = "Sign Up";
+        text.innerText = "New Here?";
+        para.innerText = "Create your account";
+    }
+}
+</script>
 
 </body>
 </html>
